@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sefinek24/niedlascamu.pl-tracker.git"
+    "url": "git+https://github.com/sefinek/niedlascamu.pl-tracker.git"
   },
   "author": "Sefinek <contact@sefinek.net> (https://sefinek.net)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sefinek24/niedlascamu.pl-tracker/issues"
+    "url": "https://github.com/sefinek/niedlascamu.pl-tracker/issues"
   },
-  "homepage": "https://github.com/sefinek24/niedlascamu.pl-tracker#readme",
+  "homepage": "https://github.com/sefinek/niedlascamu.pl-tracker#readme",
   "dependencies": {
     "axios": "^1.7.7",
     "cheerio": "^1.0.0",
