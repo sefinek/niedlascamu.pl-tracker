@@ -122,11 +122,11 @@ const crawlPage = async (url, baseUrl) => {
 const crawl = async () => {
 	VISITED_URLS.clear();
 
+	await git.pull('origin', 'main');
+
 	for (const baseUrl of BASE_URL) await crawlPage(baseUrl, baseUrl);
 
 	try {
-		await git.pull('origin', 'main');
-
 		const { modified, created, deleted, not_added } = await git.status();
 		if (![...modified, ...created, ...deleted, ...not_added].length) return console.log('No changes to commit');
 
