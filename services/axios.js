@@ -1,10 +1,8 @@
 const axios = require('axios');
 const { name, version, homepage } = require('../package.json');
 
-const UserAgent = `Mozilla/5.0 (compatible; ${name}/${version}; +${homepage})`;
-
 axios.defaults.headers.common = {
-	'User-Agent': UserAgent,
+	'User-Agent': `Mozilla/5.0 (compatible; ${name}/${version}; +${homepage})`,
 	'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
 	'Accept-Encoding': 'gzip, deflate, br',
 	'Accept-Language': 'pl;q=0.9',

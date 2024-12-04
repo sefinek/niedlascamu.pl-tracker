@@ -18,6 +18,7 @@ if (!fs.existsSync(WWW_DIR)) fs.mkdirSync(WWW_DIR);
 
 const fetchPageContent = async url => {
 	console.log(`GET ${url}`);
+
 	try {
 		const { data } = await axios.get(url);
 		return data;
@@ -58,16 +59,15 @@ const saveResources = async ($, fileName, baseUrl) => {
 			const resourceDir = path.join(path.dirname(fileName), ext);
 			if (!fs.existsSync(resourceDir)) fs.mkdirSync(resourceDir);
 
+			console.log('GET', resourceUrl);
 			const resourceFileName = path.join(resourceDir, path.basename(resourceUrl));
-			if (!fs.existsSync(resourceFileName)) {
-				try {
-					const { data } = await axios.get(resourceUrl, { responseType: ext === 'css' || ext === 'js' ? 'text' : 'arraybuffer' });
-					if (ext === 'css') saveToFile(beautifyCSS(data, { indent_size: 4 }), resourceFileName);
-					else if (ext === 'js') saveToFile(beautifyJS(data, { indent_size: 4 }), resourceFileName);
-					else saveBinaryToFile(data, resourceFileName);
-				} catch (err) {
-					console.error(err.stack);
-				}
+			try {
+				const { data } = await axios.get(resourceUrl, { responseType: ext === 'css' || ext === 'js' ? 'text' : 'arraybuffer' });
+				if (ext === 'css') saveToFile(beautifyCSS(data, { indent_size: 4 }), resourceFileName);
+				else if (ext === 'js') saveToFile(beautifyJS(data, { indent_size: 4 }), resourceFileName);
+				else saveBinaryToFile(data, resourceFileName);
+			} catch (err) {
+				console.error(err.stack);
 			}
 		}
 	});
