@@ -21,6 +21,7 @@
     "axios": "^1.7.9",
     "cheerio": "^1.0.0",
     "cron": "^3.2.1",
+    "dotenv": "^16.4.7",
     "js-beautify": "^1.15.1",
     "simple-git": "^3.27.0"
   },
