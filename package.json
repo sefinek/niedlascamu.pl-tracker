@@ -1,6 +1,6 @@
 {
   "name": "niedlascamu.pl-tracker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Śledzenie strony januszy niedlascamu.pl.",
   "main": "index.js",
   "scripts": {
@@ -18,14 +18,14 @@
   },
   "homepage": "https://github.com/sefinek/niedlascamu.pl-tracker#readme",
   "dependencies": {
-    "axios": "^1.7.7",
+    "axios": "^1.7.9",
     "cheerio": "^1.0.0",
-    "cron": "^3.1.8",
+    "cron": "^3.2.1",
     "js-beautify": "^1.15.1",
     "simple-git": "^3.27.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.14.0",
-    "globals": "^15.11.0"
+    "@eslint/js": "^9.16.0",
+    "globals": "^15.13.0"
   }
 }
