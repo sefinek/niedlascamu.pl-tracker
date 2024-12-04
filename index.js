@@ -1,3 +1,4 @@
+require('dotenv').config();
 const axios = require('./services/axios.js');
 const cheerio = require('cheerio');
 const { CronJob } = require('cron');
@@ -125,6 +126,8 @@ const crawl = async () => {
 	await git.pull('origin', 'main');
 
 	for (const baseUrl of BASE_URL) await crawlPage(baseUrl, baseUrl);
+
+	if (process.env.NODE_ENV === 'development') return;
 
 	try {
 		const { modified, created, deleted, not_added } = await git.status();
