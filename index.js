@@ -17,10 +17,10 @@ const VISITED_URLS = new Set();
 if (!fs.existsSync(WWW_DIR)) fs.mkdirSync(WWW_DIR);
 
 const fetchPageContent = async url => {
+	console.log('GET     ', url);
+
 	try {
 		const { data } = await axios.get(url);
-
-		console.log('Crawled ', url);
 		return data;
 	} catch (err) {
 		if (err.response.status !== 404) console.error(err.message);
