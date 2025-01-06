@@ -9,7 +9,7 @@ const path = require('node:path');
 const git = simpleGit();
 
 const WWW_DIR = './www';
-const BASE_URL = ['https://niedlascamu.pl', 'https://banq.niedlascamu.pl'];
+const BASE_URL = ['https://niedlascamu.pl', 'https://banq.niedlascamu.pl', 'https://sklep.niedlascamu.pl'];
 const TRACK_RESOURCES = ['css', 'js', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'ico', 'pdf'];
 
 const VISITED_URLS = new Set();
@@ -17,13 +17,13 @@ const VISITED_URLS = new Set();
 if (!fs.existsSync(WWW_DIR)) fs.mkdirSync(WWW_DIR);
 
 const fetchPageContent = async url => {
-	console.log(`GET ${url}`);
-
 	try {
 		const { data } = await axios.get(url);
+
+		console.log('Crawled ', url);
 		return data;
 	} catch (err) {
-		console.error(err.stack);
+		if (err.response.status !== 404) console.error(err.message);
 		return null;
 	}
 };
@@ -34,9 +34,7 @@ const hasChanges = (newContent, filePath) => !fs.existsSync(filePath) || fs.read
 
 const cleanContent = html => {
 	const $ = cheerio.load(html);
-	$('script').each((_, el) => {
-		if ($(el).html()?.startsWith('(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement(\'script\');')) $(el).remove();
-	});
+	$('script').filter((_, el) => $(el).html()?.startsWith('(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement(\'script\');')).remove();
 	$('a[href], link[href]').each((_, el) => $(el).attr('href', $(el).attr('href').split(/[?#]/)[0]));
 	$('[data-cf-beacon], [data-cfemail]').removeAttr('data-cf-beacon data-cfemail');
 	return beautifyHTML($.html(), { indent_size: 4, wrap_line_length: 120, preserve_newlines: true, unformatted: ['pre', 'code', 'li'] });
@@ -47,7 +45,7 @@ const saveResources = async ($, fileName, baseUrl) => {
 
 	$('link[href], script[src], img[src], source[src], a[href]').each(async (_, el) => {
 		let resourceUrl = $(el).attr('href') || $(el).attr('src');
-		resourceUrl = resourceUrl.split('?')[0];
+		resourceUrl = resourceUrl?.split('?')[0];
 
 		if (resourceUrl && regex.test(resourceUrl)) {
 			if (!resourceUrl.startsWith('http')) resourceUrl = new URL(resourceUrl, baseUrl).href;
@@ -59,13 +57,12 @@ const saveResources = async ($, fileName, baseUrl) => {
 			const resourceDir = path.join(path.dirname(fileName), ext);
 			if (!fs.existsSync(resourceDir)) fs.mkdirSync(resourceDir);
 
-			console.log('GET', resourceUrl);
+			console.log('Download', resourceUrl);
 			const resourceFileName = path.join(resourceDir, path.basename(resourceUrl));
 			try {
 				const { data } = await axios.get(resourceUrl, { responseType: ext === 'css' || ext === 'js' ? 'text' : 'arraybuffer' });
-				if (ext === 'css') saveToFile(beautifyCSS(data, { indent_size: 4 }), resourceFileName);
-				else if (ext === 'js') saveToFile(beautifyJS(data, { indent_size: 4 }), resourceFileName);
-				else saveBinaryToFile(data, resourceFileName);
+				const saveMethod = ext === 'css' ? beautifyCSS : ext === 'js' ? beautifyJS : saveBinaryToFile;
+				saveMethod(data, resourceFileName);
 			} catch (err) {
 				console.error(err.stack);
 			}
@@ -74,26 +71,14 @@ const saveResources = async ($, fileName, baseUrl) => {
 };
 
 const urlToFileName = (url, baseUrl) => {
-	const domainFolder = new URL(baseUrl).hostname;
-	const domainDir = path.join(WWW_DIR, domainFolder);
+	const domainDir = path.join(WWW_DIR, new URL(baseUrl).hostname);
 	if (!fs.existsSync(domainDir)) fs.mkdirSync(domainDir);
 
-	let sanitizedUrl = url.replace(baseUrl, '')
-		.replace(/\/$/, '')
-		.replace(/[^a-z0-9\\/]/gi, '-')
-		.replace(/\//g, '_')
-		.toLowerCase();
-
-	if (url.includes('index.php?page=')) {
-		sanitizedUrl = url.split('index.php?page=')[1]
-			.replace(/[^a-z0-9_]/gi, '-')
-			.toLowerCase();
-	}
-
+	let sanitizedUrl = url.replace(baseUrl, '').replace(/\/$/, '').replace(/[^a-z0-9\\/]/gi, '-').replace(/\//g, '_').toLowerCase();
+	if (url.includes('index.php?page=')) sanitizedUrl = url.split('index.php?page=')[1].replace(/[^a-z0-9_]/gi, '-').toLowerCase();
 	sanitizedUrl = sanitizedUrl.replace(/^[-_]+|[-_]+$/g, '');
 
-	if (sanitizedUrl === '') return path.join(domainDir, 'index.html');
-	return path.join(domainDir, `${sanitizedUrl}.html`);
+	return sanitizedUrl ? path.join(domainDir, `${sanitizedUrl}.html`) : path.join(domainDir, 'index.html');
 };
 
 const crawlPage = async (url, baseUrl) => {
@@ -142,7 +127,7 @@ const crawl = async () => {
 		if (deleted.length > 0) console.log('Deleted', deleted);
 		if (not_added.length > 0) console.log('Not added', not_added);
 	} catch (err) {
-		console.error('Error during Git operations ):', err);
+		console.error('Error during Git operations:', err);
 	}
 };
 
