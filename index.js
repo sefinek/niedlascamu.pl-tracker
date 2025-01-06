@@ -9,7 +9,7 @@ const path = require('node:path');
 const git = simpleGit();
 
 const WWW_DIR = './www';
-const BASE_URL = ['https://niedlascamu.pl', 'https://banq.niedlascamu.pl', 'https://sklep.niedlascamu.pl'];
+const BASE_URL = ['https://niedlascamu.pl', 'https://banq.niedlascamu.pl'];
 const TRACK_RESOURCES = ['css', 'js', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'ico', 'pdf'];
 
 const VISITED_URLS = new Set();
