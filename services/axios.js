@@ -12,7 +12,7 @@ axios.defaults.headers.common = {
 	'Sec-Fetch-Site': 'none',
 	'Sec-Fetch-User': '?1',
 	'Upgrade-Insecure-Requests': '1',
-	'Priority': 'u=0, i'
+	'Priority': 'u=0, i',
 };
 
 axios.defaults.timeout = 15000;
