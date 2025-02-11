@@ -14,7 +14,7 @@ const TRACK_RESOURCES = ['css', 'js', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'ico',
 
 const VISITED_URLS = new Set();
 
-if (!fs.existsSync(WWW_DIR)) fs.mkdirSync(WWW_DIR);
+if (!fs.existsSync(WWW_DIR)) fs.mkdirSync(WWW_DIR, { recursive: true });
 
 const fetchPageContent = async url => {
 	console.log('GET     ', url);
@@ -23,7 +23,7 @@ const fetchPageContent = async url => {
 		const { data } = await axios.get(url);
 		return data;
 	} catch (err) {
-		if (err.response.status !== 404) console.error(err.message);
+		if (err.response?.status !== 404) console.error(`Error fetching ${url}:`, err.message);
 		return null;
 	}
 };
@@ -34,48 +34,80 @@ const hasChanges = (newContent, filePath) => !fs.existsSync(filePath) || fs.read
 
 const cleanContent = html => {
 	const $ = cheerio.load(html);
+
 	$('script').filter((_, el) => $(el).html()?.startsWith('(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement(\'script\');')).remove();
-	$('a[href], link[href]').each((_, el) => $(el).attr('href', $(el).attr('href').split(/[?#]/)[0]));
+
+	$('a[href], link[href]').each((_, el) => {
+		const href = $(el).attr('href');
+		if (href && !href.startsWith('index.php')) $(el).attr('href', href.split(/[?#]/)[0]);
+	});
+
 	$('[data-cf-beacon], [data-cfemail]').removeAttr('data-cf-beacon data-cfemail');
-	return beautifyHTML($.html(), { indent_size: 4, wrap_line_length: 120, preserve_newlines: true, unformatted: ['pre', 'code', 'li'] });
+
+	return beautifyHTML($.html(), {
+		indent_size: 4,
+		wrap_line_length: 120,
+		preserve_newlines: true,
+		unformatted: ['pre', 'code', 'li'],
+	});
 };
 
 const saveResources = async ($, fileName, baseUrl) => {
 	const regex = new RegExp(`\\.(${TRACK_RESOURCES.join('|')})$`);
+	const tasks = [];
 
-	$('link[href], script[src], img[src], source[src], a[href]').each(async (_, el) => {
+	$('link[href], script[src], img[src], source[src], a[href]').each((_, el) => {
 		let resourceUrl = $(el).attr('href') || $(el).attr('src');
-		resourceUrl = resourceUrl?.split('?')[0];
+		if (!resourceUrl) return;
 
-		if (resourceUrl && regex.test(resourceUrl)) {
-			if (!resourceUrl.startsWith('http')) resourceUrl = new URL(resourceUrl, baseUrl).href;
+		resourceUrl = resourceUrl.split('?')[0];
+		if (!regex.test(resourceUrl)) return;
 
-			const resourceDomain = new URL(resourceUrl).origin;
-			if (!BASE_URL.includes(resourceDomain)) return;
+		if (!resourceUrl.startsWith('http')) resourceUrl = new URL(resourceUrl, baseUrl).href;
 
-			const ext = path.extname(resourceUrl).slice(1).toLowerCase();
-			const resourceDir = path.join(path.dirname(fileName), ext);
-			if (!fs.existsSync(resourceDir)) fs.mkdirSync(resourceDir);
+		const resourceDomain = new URL(resourceUrl).origin;
+		if (!BASE_URL.includes(resourceDomain)) return;
 
-			console.log('Download', resourceUrl);
-			const resourceFileName = path.join(resourceDir, path.basename(resourceUrl));
-			try {
-				const { data } = await axios.get(resourceUrl, { responseType: ext === 'css' || ext === 'js' ? 'text' : 'arraybuffer' });
-				const saveMethod = ext === 'css' ? beautifyCSS : ext === 'js' ? beautifyJS : saveBinaryToFile;
-				saveMethod(data, resourceFileName);
-			} catch (err) {
-				console.error(err.stack);
-			}
-		}
+		const ext = path.extname(resourceUrl).slice(1).toLowerCase();
+		const resourceDir = path.join(path.dirname(fileName), ext);
+		if (!fs.existsSync(resourceDir)) fs.mkdirSync(resourceDir, { recursive: true });
+
+		console.log('Download', resourceUrl);
+		const resourceFileName = path.join(resourceDir, path.basename(resourceUrl));
+
+		tasks.push(
+			axios.get(resourceUrl, { responseType: ext === 'css' || ext === 'js' ? 'text' : 'arraybuffer' })
+				.then(({ data }) => {
+					if (ext === 'css') {
+						saveToFile(beautifyCSS(data, { indent_size: 4 }), resourceFileName);
+					} else if (ext === 'js') {
+						saveToFile(beautifyJS(data, { indent_size: 4 }), resourceFileName);
+					} else {
+						saveBinaryToFile(data, resourceFileName);
+					}
+				})
+				.catch(err => console.error(`Error downloading ${resourceUrl}:`, err.message))
+		);
 	});
+
+	await Promise.all(tasks);
 };
 
 const urlToFileName = (url, baseUrl) => {
 	const domainDir = path.join(WWW_DIR, new URL(baseUrl).hostname);
-	if (!fs.existsSync(domainDir)) fs.mkdirSync(domainDir);
+	if (!fs.existsSync(domainDir)) fs.mkdirSync(domainDir, { recursive: true });
 
-	let sanitizedUrl = url.replace(baseUrl, '').replace(/\/$/, '').replace(/[^a-z0-9\\/]/gi, '-').replace(/\//g, '_').toLowerCase();
-	if (url.includes('index.php?page=')) sanitizedUrl = url.split('index.php?page=')[1].replace(/[^a-z0-9_]/gi, '-').toLowerCase();
+	let sanitizedUrl = url.replace(baseUrl, '').replace(/\/$/, '')
+		.replace(/[^a-z0-9\\/]/gi, '-')
+		.replace(/\//g, '_')
+		.toLowerCase();
+
+	if (url.includes('index.php?page=')) {
+		sanitizedUrl = url.split('index.php?page=')[1]
+			.replace(/[^a-z0-9_]/gi, '-')
+			.toLowerCase();
+	}
+
 	sanitizedUrl = sanitizedUrl.replace(/^[-_]+|[-_]+$/g, '');
 
 	return sanitizedUrl ? path.join(domainDir, `${sanitizedUrl}.html`) : path.join(domainDir, 'index.html');
