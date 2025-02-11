@@ -1,0 +1,85 @@
+/* Ustawienia dla całego ciała, aby centrować elementy */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+/* Nagłówek wyśrodkowany */
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Formularz wyśrodkowany z odpowiednim cieniem i marginesami */
+form {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Styl dla rzędów formularza */
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Etykiety obok elementów formularza */
+label {
+    margin-right: 20px;
+    font-weight: bold;
+    width: 200px;
+    /* Dostosuj tę szerokość do własnych potrzeb */
+    text-align: right;
+}
+
+/* Elementy formularza */
+input,
+select,
+textarea {
+    flex-grow: 1;
+    padding: 10px;
+    margin-bottom: 0;
+    /* Usuń dodatkowe marginesy */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Styl textarea (opcjonalnie, aby były mniejsze) */
+textarea {
+    height: 100px;
+}
+
+/* Przycisk wysyłania */
+input[type="submit"] {
+    background-color: #3a3de9;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 15px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
+    /* Aby dodać trochę miejsca od góry */
+}
+
+/* Przycisk wysyłania po najechaniu */
+input[type="submit"]:hover {
+    background-color: #2b2dbd;
+}
