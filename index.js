@@ -11,7 +11,7 @@ const git = simpleGit();
 const WWW_DIR = './www';
 const BASE_URL = ['https://niedlascamu.pl', 'https://filmy.niedlascamu.pl', 'https://banq.niedlascamu.pl'];
 const TRACK_RESOURCES = ['css', 'js', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'ico', 'pdf'];
-const MAX_FILENAME_LENGTH = 255;
+const MAX_FILENAME_LENGTH = 128;
 
 const VISITED_URLS = new Set();
 
@@ -58,7 +58,7 @@ const truncateFileName = fileName => {
 		const extIndex = fileName.lastIndexOf('.');
 		const ext = extIndex !== -1 ? fileName.slice(extIndex) : '';
 		const baseName = extIndex !== -1 ? fileName.slice(0, extIndex) : fileName;
-		return baseName.slice(0, MAX_FILENAME_LENGTH - ext.length - 3) + '...' + ext;
+		return `${baseName.slice(0, MAX_FILENAME_LENGTH - ext.length - 3)}[...]${ext}`;
 	}
 	return fileName;
 };
