@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/sefinek/niedlascamu.pl-tracker#readme",
   "dependencies": {
-    "axios": "^1.8.2",
+    "axios": "^1.8.3",
     "cheerio": "^1.0.0",
     "cron": "^4.1.0",
     "dotenv": "^16.4.7",
