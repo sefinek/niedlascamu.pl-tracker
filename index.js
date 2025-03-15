@@ -11,6 +11,7 @@ const git = simpleGit();
 const WWW_DIR = './www';
 const BASE_URL = ['https://niedlascamu.pl', 'https://filmy.niedlascamu.pl', 'https://banq.niedlascamu.pl'];
 const TRACK_RESOURCES = ['css', 'js', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'ico', 'pdf'];
+const MAX_FILENAME_LENGTH = 255;
 
 const VISITED_URLS = new Set();
 
@@ -52,6 +53,16 @@ const cleanContent = html => {
 	});
 };
 
+const truncateFileName = fileName => {
+	if (fileName.length > MAX_FILENAME_LENGTH) {
+		const extIndex = fileName.lastIndexOf('.');
+		const ext = extIndex !== -1 ? fileName.slice(extIndex) : '';
+		const baseName = extIndex !== -1 ? fileName.slice(0, extIndex) : fileName;
+		return baseName.slice(0, MAX_FILENAME_LENGTH - ext.length - 3) + '...' + ext;
+	}
+	return fileName;
+};
+
 const saveResources = async ($, fileName, baseUrl) => {
 	const regex = new RegExp(`\\.(${TRACK_RESOURCES.join('|')})$`);
 	const tasks = [];
@@ -73,8 +84,7 @@ const saveResources = async ($, fileName, baseUrl) => {
 		if (!fs.existsSync(resourceDir)) fs.mkdirSync(resourceDir, { recursive: true });
 
 		console.log('Download', resourceUrl);
-		const resourceFileName = path.join(resourceDir, path.basename(resourceUrl));
-
+		const resourceFileName = truncateFileName(path.join(resourceDir, path.basename(resourceUrl)));
 		tasks.push(
 			axios.get(resourceUrl, { responseType: ext === 'css' || ext === 'js' ? 'text' : 'arraybuffer' })
 				.then(({ data }) => {
@@ -109,8 +119,8 @@ const urlToFileName = (url, baseUrl) => {
 	}
 
 	sanitizedUrl = sanitizedUrl.replace(/^[-_]+|[-_]+$/g, '');
-
-	return sanitizedUrl ? path.join(domainDir, `${sanitizedUrl}.html`) : path.join(domainDir, 'index.html');
+	const fileName = sanitizedUrl ? `${sanitizedUrl}.html` : 'index.html';
+	return path.join(domainDir, truncateFileName(fileName));
 };
 
 const crawlPage = async (url, baseUrl) => {
