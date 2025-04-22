@@ -18,8 +18,6 @@ const VISITED_URLS = new Set();
 if (!fs.existsSync(WWW_DIR)) fs.mkdirSync(WWW_DIR, { recursive: true });
 
 const fetchPageContent = async url => {
-	console.log('GET     ', url);
-
 	try {
 		const { data } = await axios.get(url);
 		return data;
@@ -83,7 +81,6 @@ const saveResources = async ($, fileName, baseUrl) => {
 		const resourceDir = path.join(path.dirname(fileName), ext);
 		if (!fs.existsSync(resourceDir)) fs.mkdirSync(resourceDir, { recursive: true });
 
-		console.log('Download', resourceUrl);
 		const resourceFileName = truncateFileName(path.join(resourceDir, path.basename(resourceUrl)));
 		tasks.push(
 			axios.get(resourceUrl, { responseType: ext === 'css' || ext === 'js' ? 'text' : 'arraybuffer' })
