@@ -1,137 +1,42 @@
-<!DOCTYPE html>
-<html lang="pl">
+<html>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formularz transakcji</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        #email-container,
-        #transaction-date-container {
-            display: flex;
-            align-items: center;
-        }
+<head></head>
 
-        #email-container span,
-        #transaction-date-container span {
-            margin-left: 10px;
-            color: gray;
-        }
-    </style>
-    <script>
-        function updateTransactionDetailsLabel() {
-            const transactionType = document.getElementById('transaction_type').value;
-            const transactionDetailsLabel = document.getElementById('transaction_details_label');
-            const accountantDetails = document.getElementById('accountant_details');
-
-            if (transactionType === 'przelew') {
-                transactionDetailsLabel.textContent = 'Numer konta odbiorcy przelewu:';
-                accountantDetails.style.display = 'block';
-            } else if (transactionType === 'wpłata na kartę') {
-                transactionDetailsLabel.textContent = 'Numer karty na którą wpłacałeś: (może być niepełny)';
-                accountantDetails.style.display = 'none';
-            } else {
-                transactionDetailsLabel.textContent = 'Dane transakcji:';
-                accountantDetails.style.display = 'none';
-            }
-        }
-
-        function saveFormData() {
-            const email = document.getElementById('email').value;
-            const transactionDate = document.getElementById('transaction_date').value;
-            localStorage.setItem('email', email);
-            localStorage.setItem('transaction_date', transactionDate);
-        }
-
-        function loadFormData() {
-            const email = localStorage.getItem('email');
-            const transactionDate = localStorage.getItem('transaction_date');
-            if (email) {
-                document.getElementById('email').value = email;
-                document.getElementById('email-container').insertAdjacentHTML('beforeend',
-                    '<span>(wpisano automatycznie)</span>');
-            }
-            if (transactionDate) {
-                document.getElementById('transaction_date').value = transactionDate;
-                document.getElementById('transaction-date-container').insertAdjacentHTML('beforeend',
-                    '<span>(wpisano automatycznie)</span>');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', loadFormData);
-    </script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LfThUQqAAAAAOYtw-B2pKvgrbdnUQXoFXh9tMYl"></script>
-    <script>
-        grecaptcha.ready(function() {
-            grecaptcha.execute('6LfThUQqAAAAAOYtw-B2pKvgrbdnUQXoFXh9tMYl', {
-                action: 'submit'
-            }).then(function(token) {
-                document.getElementById('recaptchaResponse').value = token;
-            });
-        });
-    </script>
-
-</head>
-
-<body>
-    <h1>Wprowadź dane transakcji</h1>
-    <p><b>Dlaczego potrzebujemy tych danych?</b><br>Sami nie wiemy, mamy bardzo dużo pracy, więc postanowiliśmy
-        stworzyć kolejny, nikomu nie potrzebny projekt aby dołożyć sobie kolejnej roboty</p>
-    <form action="insert.php" method="post" onsubmit="saveFormData()">
-        <div class="form-row">
-            <label id="lemail" for="email">Twój adres e-mail:</label>
-            <input type="email" id="email" name="email" required="">
-        </div>
-
-        <div class="form-row">
-            <label id="ltrans" for="transaction_date">Data transakcji (DD.MM.RRRR):</label>
-            <input type="date" id="transaction_date" name="transaction_date" required="">
-        </div>
-
-        <div class="form-row">
-            <label for="transaction_type">Typ transakcji:</label>
-            <select id="transaction_type" name="transaction_type" required=""
-                onchange="updateTransactionDetailsLabel()">
-                <option value="przelew" selected="">Przelew (przelew na numer konta)</option>
-                <option value="płatność kartą">Płatność kartą (jak zakupy przez internet)</option>
-                <option value="wpłata na kartę">Wpłata na kartę (przez REVOLUT)</option>
-            </select>
-        </div>
-
-        <div class="form-row">
-            <label for="transaction_details" id="transaction_details_label">Numer konta odbiorcy przelewu:</label>
-            <textarea id="transaction_details" name="transaction_details" required=""></textarea>
-        </div>
-
-        <div class="form-row">
-            <label for="transaction_amount">Kwota transakcji:</label>
-            <input type="number" id="transaction_amount" name="transaction_amount" required="" step="0.01">
-        </div>
-
-        <div class="form-row">
-            <label for="currency">Waluta:</label>
-            <select id="currency" name="currency" required="">
-                <option value="zł">PLN</option>
-                <option value="usd">USD</option>
-                <option value="eur">EUR</option>
-            </select>
-        </div>
-
-        <div class="form-row" id="accountant_details">
-            <label for="transaction_details2">Imię i nazwisko odbiorcy przelewu (księgowego):</label>
-            <textarea id="transaction_details2" name="transaction_details2"></textarea>
-        </div>
-
-        <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
-
-        <div class="form-row">
-            <input type="submit" value="Zapisz">
-        </div>
-    </form>
-
-
-
+<body>(�/�X<o����>��ۃ�`D��PU�Z��y�~��H�g Q�����P�S��'�#���ʀO���K9���Py��}BN;��GG/t��2��b���j_��
+        ��@߽�o��M��/tl��9ԁu^W<m���qm�w��ok��k���+^��'f�>
+            &gt;d���JbL&gt;��\��1�h��sBtn�gzD�u?!�b�N�S�|R�s���q�F�طn�i�i��w�~�l�;nS�MZx)
+            յ����Y�6���1�*9�5�ۥ�]Y�/W�ʑ�1|b|�znWFf�
+            ���U&gt;�!֩�F�l�`f~p�T&lt;8DP�'�^8an3~�]���WM�ܡrJ(�;}i�g���i�2�|���D�|6����%��8��U�Q~^�ԟV��m�&gt;.=�r�铈0�d�����
+            ��F137X�=��7�WqhO��gT�5�Ϙ�B�f��Tث��
+            �##�^E+��u{U�ٻ�o˶�U�يY���^ղ����e�BG��]��q�j7�(�Վ�騆��a����Nk�CN����֍a�aH�n\!��"WP�}q��ƐNs�a������(�Pd��9��s��w9�~ݸr{f���6J&amp;�"?��S���dT�E5H��W|iݮ_P�ԧ���E/���_6E�?��K]l��zS��-*2h�,�c�VQ���
+            dd����[��$��tk�V�U8���ʙ&gt;��Dr���*h/K(H=v��&lt;�D�u�e�S�P��K��K
+            �ݷV�k����&gt;�E{�TĐ(Rw[1�"�B�)��ֈo�R9=��%�$'v��
+            �h�
+            ��䜶�1f�:��wg4[�'Է��&amp;
+            &lt;�؞E�k�ӛN��DWc��5I���ي}�-��sv%�#4BITA{��DQ�V:u�lۃ
+            E�DF��h&gt;&amp;�f�`7�����n��%����b7����M��� &gt;���l
+            �N��"�E����U�K�$f��He2SW��l&lt;$��K�����:����1ʌ_�R9����v$��+?��,9��X�r�Aa=�y#�z�r*,�w���͎`�R�����4y�����q�~��S�j-��v�_��zj�Q���E��;��T2h�:
+            �NkHla=0p4�Q���
+            ��ܔ%����{�*��r���[�}�ݺ���;&gt;....&amp;�f�d$���,��*���Q�o��s��2ek��66k8�gc�Wي�(��T�l
+            ��&gt;�P
+            �rU�h��**9��{���(�w=��Q�$���X����pM��EB�*��=H(t�����*�*���C�9��'��W���۸&lt;ך����P�ɍu���
+            �˳�(��E$�D(���0=T&amp;�wy��k�� �]^lе}Q�`��#���@A�L�40@l��D8���h$�X
+            �zA��:H`�iр�)�T��B��I�M���A�bj�@�By�쾪{i9�2���X$ "(�
+            V*���CC@�%�8`�����%B�D�h�����#/�n{b��NP~���y�&lt;�G(
+            =��`����
+            m&lt;$.�&amp;1 &gt;��1*"���$Lv�^Qս��Wz*����1��j��s�ޫ#y�65�R}Ƒ����]����P�/��
+            <z�sfb�]���2Ș�$iraba�;�z`�q�a�bf)d�!3#"""i&i:��c �����6�ût�ssp7\�th��w��="">
+                s�&lt;,���-=]�f+�eu{�9�6xAHa���.��:E����-��M"(���96@1�AB�h=�Qp�q|���J�pT*{�q����b2+/w;�'Ub�z{������%�Tm�oN��q
+                ��)�]4�$�[�l&amp;`Է"9J��]qO��D����q䤲+(��$��΂�4.-��5F��.��I��@ �D�
+                ����NO)e�5Zz��
+                �GY�d9��Mʚ?��҄��-��=!,kA�|
+                ����Y����Z]M$���}UY�=uֆs�EC�.HDw����0�U�=uF���{sw��{����#M!\�k���?��t�2�AK|+��=:i�"RL.
+                ͥα��e��7�YN�:j�{�=�ؠ��s���N���x����X�<mךq}"h]���m:�(uc��c(����9�a���>
+                    ����|���"����e^r/FN�~��Yt���QQQ����w�{���THm�:��Oy���/@@�ϙr���&amp;R�޲�c��̫y3�X�
+                    ^�</mךq}"h]���m:�(uc��c(����9�a���>
+            </z�sfb�]���2Ș�$iraba�;�z`�q�a�bf)d�!3#"""i&i:��c>
+        </m���qm�w��ok��k���+^��'f�>
+    </o����>
 </body>
 
 </html>
