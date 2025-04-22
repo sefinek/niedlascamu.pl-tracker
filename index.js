@@ -41,7 +41,7 @@ const cleanContent = html => {
 		if (href && !href.startsWith('index.php')) $(el).attr('href', href.split(/[?#]/)[0]);
 	});
 
-	$('[data-cf-beacon]').remove();
+	$('[data-cf-beacon], [data-cfemail]').remove();
 
 	return beautifyHTML($.html(), {
 		indent_size: 4,
