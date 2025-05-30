@@ -1,7 +1,6 @@
 {
   "name": "niedlascamu.pl-tracker",
   "version": "1.0.3",
-  "description": "Śledzenie strony januszy niedlascamu.pl.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
