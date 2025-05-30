@@ -174,5 +174,5 @@ const crawl = async () => {
 	}
 };
 
-new CronJob('0 */4 * * *', crawl, null, true, 'Europe/Warsaw');
+new CronJob('0 12,19 * * *', crawl, null, true, 'Europe/Warsaw');
 (async () => crawl())();
