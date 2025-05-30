@@ -8,4 +8,4 @@ Wiem, że ich witryna została napisana w asyście ChataGPT, więc jestem po pro
 Witryna jest crawlowana co 4 godziny. Skrypt został zaprojektowany tak, by nie zaszkodzić stronie.
 
 ## Licencja MIT
-Rób se z tym, co chcesz.
+Rób sobie z [index.js](index.js), co tylko zechcesz.
