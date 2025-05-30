@@ -18,6 +18,8 @@ const VISITED_URLS = new Set();
 if (!fs.existsSync(WWW_DIR)) fs.mkdirSync(WWW_DIR, { recursive: true });
 
 const fetchPageContent = async url => {
+	if (process.env.NODE_ENV === 'development') console.log('GET', url);
+
 	try {
 		const { data } = await axios.get(url);
 		return data;
@@ -81,6 +83,7 @@ const saveResources = async ($, fileName, baseUrl) => {
 		const resourceDir = path.join(path.dirname(fileName), ext);
 		if (!fs.existsSync(resourceDir)) fs.mkdirSync(resourceDir, { recursive: true });
 
+		if (process.env.NODE_ENV === 'development') console.log('GET', resourceUrl);
 		const resourceFileName = truncateFileName(path.join(resourceDir, path.basename(resourceUrl)));
 		tasks.push(
 			axios.get(resourceUrl, { responseType: ext === 'css' || ext === 'js' ? 'text' : 'arraybuffer' })
@@ -146,25 +149,26 @@ const crawlPage = async (url, baseUrl) => {
 
 const crawl = async () => {
 	VISITED_URLS.clear();
-
 	await git.pull('origin', 'main');
 
 	for (const baseUrl of BASE_URL) await crawlPage(baseUrl, baseUrl);
 
-	if (process.env.NODE_ENV === 'development') return;
-
 	try {
-		const { modified, created, deleted, not_added } = await git.status();
-		if (![...modified, ...created, ...deleted, ...not_added].length) return console.log('No changes to commit');
+		const { modified = [], created = [], deleted = [], not_added = [] } = await git.status();
 
-		await git.add('.');
-		await git.commit(`Content updated, date: ${new Date().toLocaleString('pl-PL')}`);
-		await git.push('origin', 'main');
+		const all = [...modified, ...created, ...deleted, ...not_added];
+		if (!all.length) return console.log('No changes to commit');
 
-		if (modified.length > 0) console.log('Modified', modified);
-		if (created.length > 0) console.log('Created', created);
-		if (deleted.length > 0) console.log('Deleted', deleted);
-		if (not_added.length > 0) console.log('Not added', not_added);
+		const logChanges = { Modified: modified, Created: created, Deleted: deleted, 'Not added': not_added };
+		for (const [label, files] of Object.entries(logChanges)) {
+			if (files.length) console.log(label, files);
+		}
+
+		if (process.env.NODE_ENV === 'production' && [modified, created, deleted, not_added].every(arr => arr.length)) {
+			await git.add('.');
+			await git.commit(`Content updated, date: ${new Date().toLocaleString('pl-PL')}`);
+			await git.push('origin', 'main');
+		}
 	} catch (err) {
 		console.error('Error during Git operations:', err);
 	}
