@@ -17,15 +17,15 @@
   },
   "homepage": "https://github.com/sefinek/niedlascamu.pl-tracker#readme",
   "dependencies": {
-    "axios": "^1.9.0",
-    "cheerio": "^1.0.0",
+    "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
     "cron": "^4.3.1",
     "dotenv": "^16.5.0",
     "js-beautify": "^1.15.4",
-    "simple-git": "^3.27.0"
+    "simple-git": "^3.28.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
+    "@eslint/js": "^9.29.0",
     "globals": "^16.2.0"
   }
 }
