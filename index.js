@@ -96,7 +96,7 @@ const saveResources = async ($, fileName, baseUrl) => {
 						saveBinaryToFile(data, resourceFileName);
 					}
 				})
-				.catch(err => console.error(`Error downloading ${resourceUrl}:`, err.message))
+				.catch(err => console.log(`Error downloading ${resourceUrl}:`, err.message))
 		);
 	});
 
